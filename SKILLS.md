@@ -13,4 +13,5 @@
 | **spec-driven-eval** | Avalia o quão completamente uma implementação atende a um PRD/spec |
 | **tactical-ddd** | Detecta modelos de domínio anêmicos e refatora para modelos ricos com padrões DDD táticos |
 | **technical-design-doc-creator** | Cria Documentos de Design Técnico (TDD) abrangentes |
+| **code-review-skill** | Revisão de código estruturada e modular para 20+ linguagens (React, Vue, Rust, TypeScript, etc.) |
 | **tlc-spec-driven** | Planejamento e implementação de funcionalidades em 4 fases: Specify → Design → Tasks → Execute |
