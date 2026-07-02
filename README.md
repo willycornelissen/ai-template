@@ -28,7 +28,6 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | **mermaid-studio** | Diagramas Mermaid (SVG/PNG/ASCII) |
 | **skill-architect** | Criação de novas skills |
 | **spec-driven-eval** | Avaliação de implementação contra PRD/spec |
-| **tactical-ddd** | Refatoração para modelos ricos com DDD tático |
 | **technical-design-doc-creator** | Criação de Documentos de Design Técnico |
 | **code-review-skill** | Revisão de código estruturada para 20+ linguagens/frameworks |
 | **tlc-spec-driven** | Planejamento em 4 fases: Spec → Design → Tasks → Execute |
