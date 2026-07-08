@@ -10,8 +10,8 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 │   ├── skills/         # Skills instaladas
 │   ├── docs/           # Documentação de padrões de código
 │   └── package.json    # Dependências do opencode
-├── SKILLS.md           # Lista de skills disponíveis
-└── README.md
+├── AGENTS.md           # Diretrizes comportamentais para o agente de IA
+└── SKILLS.md           # Lista de skills disponíveis
 ```
 
 ## Skills Instaladas
