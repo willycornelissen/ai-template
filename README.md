@@ -36,9 +36,9 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | Comando | Descrição |
 |---------|-----------|
 | `/explore` | Modo exploratório para pensar, investigar e esclarecer requisitos sem implementar |
-| `/tdd` | Cria um Documento de Design Técnico (TDD) para um projeto e salva em `specs/tdd.md` |
-| `/prd` | Cria um Product Requirements Document (PRD) para um projeto e salva em `specs/prd.md` |
-| `/roadmap` | Gera roadmap com features e tarefas a partir de `specs/tdd.md` e `specs/prd.md` |
-| `/plan` | Gera plano de implementação a partir de `specs/prd.md` e `specs/roadmap.md` |
-| `/generate` | Executa o plano de implementação e gera código em `src/` a partir de `specs/plan.md` |
-| `/review` | Revisa o código em `src/` comparando com `specs/prd.md` e `specs/plan.md` |
+| `/tdd` | Cria um Documento de Design Técnico (TDD) para um projeto e salva em `specification/tdd.md` |
+| `/prd` | Cria um Product Requirements Document (PRD) para um projeto e salva em `specification/prd.md` |
+| `/roadmap` | Gera roadmap com features e tarefas a partir de `specification/tdd.md` e `specification/prd.md` |
+| `/plan` | Gera plano de implementação a partir de `specification/prd.md` e `specification/roadmap.md` |
+| `/generate` | Executa o plano de implementação e gera código em `src/` a partir de `specification/plan.md` |
+| `/review` | Revisa o código em `src/` comparando com `specification/prd.md` e `specification/plan.md` |

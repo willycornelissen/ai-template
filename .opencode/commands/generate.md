@@ -1,8 +1,8 @@
 ---
-description: Execute the implementation plan from specs/plan.md and generate code in src/.
+description: Execute the implementation plan from specification/plan.md and generate code in src/.
 ---
 
-Load the tlc-spec-driven skill. Read specs/plan.md and execute the Tasks and Implement phases to generate the planned code.
+Load the tlc-spec-driven skill. Read specification/plan.md and execute the Tasks and Implement phases to generate the planned code.
 
 $ARGUMENTS
 

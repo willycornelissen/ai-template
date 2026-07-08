@@ -1,9 +1,9 @@
 ---
-description: Generate an implementation plan from specs/prd.md and specs/roadmap.md. Saves to specs/plan.md.
+description: Generate an implementation plan from specification/prd.md and specification/roadmap.md. Saves to specification/plan.md.
 ---
 
-Load the tlc-spec-driven skill. Read specs/prd.md and specs/roadmap.md. Use the Design and Tasks phases to create a detailed implementation plan with task breakdown, dependencies, and execution order.
+Load the tlc-spec-driven skill. Read specification/prd.md and specification/roadmap.md. Use the Design and Tasks phases to create a detailed implementation plan with task breakdown, dependencies, and execution order.
 
 $ARGUMENTS
 
-At the end, save the complete plan to `specs/plan.md`.
+At the end, save the complete plan to `specification/plan.md`.
