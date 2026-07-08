@@ -14,3 +14,4 @@
 | **technical-design-doc-creator** | Cria Documentos de Design Técnico (TDD) abrangentes |
 | **code-review-skill** | Revisão de código estruturada e modular para 20+ linguagens (React, Vue, Rust, TypeScript, etc.) |
 | **tlc-spec-driven** | Planejamento e implementação de funcionalidades em 4 fases: Specify → Design → Tasks → Execute |
+| **modular-architecture** | Expert em arquitetura modular com bounded contexts, facades, isolamento de estado e 10 princípios de design |

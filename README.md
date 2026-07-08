@@ -31,6 +31,7 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | **technical-design-doc-creator** | Criação de Documentos de Design Técnico |
 | **code-review-skill** | Revisão de código estruturada para 20+ linguagens/frameworks |
 | **tlc-spec-driven** | Planejamento em 4 fases: Spec → Design → Tasks → Execute |
+| **modular-architecture** | Arquitetura modular com bounded contexts, facades e 10 princípios de design |
 
 ## OpenSpec
 

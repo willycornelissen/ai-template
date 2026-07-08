@@ -60,6 +60,48 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+
+## 5. Architecture Principles
+
+**10 Key Principles:**
+
+1. Well-defined boundaries | 2. Composability | 3. Independence | 4. Individual scale | 5. Explicit communication
+2. Replaceability | 7. Deployment independence | 8. State isolation ⚠️ | 9. Observability | 10. Fail independence
+
+### Progressive Documentation Loading
+
+**CRITICAL**: Only load documents relevant to your current task. Do NOT load all documentation at once.
+
+#### Decision Tree: What to Read (Priority Order)
+
+**Implementation tasks (writing code):**
+
+- **Creating controllers, services, or repositories** → `docs/coding-patterns.md`
+  - Repository pattern, lean controllers, transaction management, entity naming, state isolation
+- **Integrating external APIs, third-party services, observability** → `docs/integration-patterns.md`
+  - Client encapsulation, injection patterns, logging, metrics, circuit breakers, event systems
+
+**Architecture/design tasks** → handled automatically by the `modular-architecture` skill:
+
+- Creating modules, evaluating module boundaries, assessing compliance, maturity assessments
+
+#### Quick Reference by Task Type
+
+
+| Task Type                         | Primary Doc                    | Notes                        |
+| --------------------------------- | ------------------------------ | ---------------------------- |
+| New entity/migration              | `docs/coding-patterns.md`      | Entity naming section        |
+| New controller/service/repository | `docs/coding-patterns.md`      | Full patterns doc            |
+| External API integration          | `docs/integration-patterns.md` | Client encapsulation section |
+| Logging/metrics/circuit breakers  | `docs/integration-patterns.md` | Resilience sections          |
+| Create new module                 | `modular-architecture` skill   | Auto-triggered               |
+| Evaluate module boundaries        | `modular-architecture` skill   | Auto-triggered               |
+| Architecture compliance check     | `modular-architecture` skill   | Auto-triggered               |
+| Maturity assessment               | `modular-architecture` skill   | Auto-triggered               |
+| Co-location, depth, suffixes      | `modular-architecture` skill   | P11–P17 structural principles |
+
+
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
