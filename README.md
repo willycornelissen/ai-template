@@ -43,3 +43,4 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | `/generate` | Executa o plano de implementação e gera código em `src/` a partir de `specification/plan.md` |
 | `/review` | Revisa o código em `src/` comparando com `specification/prd.md` e `specification/plan.md` |
 | `/doc` | Gera documentação do projeto e código em `documentation/` |
+| `/readme` | Gera ou atualiza o `README.md` na raiz do projeto com base na estrutura atual |
