@@ -6,11 +6,9 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 
 ```
 ├── .opencode/          # Configuração do opencode
-│   ├── commands/       # Comandos personalizados (ex: opsx-explore)
+│   ├── commands/       # Comandos personalizados (ex: explore)
 │   ├── skills/         # Skills instaladas
 │   └── package.json    # Dependências do opencode
-├── openspec/           # OpenSpec — framework de desenvolvimento spec-driven
-│   └── config.yaml     # Configuração do OpenSpec
 ├── SKILLS.md           # Lista de skills disponíveis
 └── README.md
 ```
@@ -33,23 +31,13 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | **tlc-spec-driven** | Planejamento em 4 fases: Spec → Design → Tasks → Execute |
 | **modular-architecture** | Arquitetura modular com bounded contexts, facades e 10 princípios de design |
 
-## OpenSpec
-
-O diretório `openspec/` contém a configuração do framework **OpenSpec**, que permite:
-
-- **Propostas** — Definição de escopo e objetivos
-- **Designs** — Decisões técnicas e arquiteturais
-- **Tasks** — Divisão de trabalho em tarefas atômicas
-- **Specs** — Especificações detalhadas de funcionalidades
-
 ## Comandos
 
 | Comando | Descrição |
 |---------|-----------|
-| `/opsx-explore` | Modo exploratório para pensar, investigar e esclarecer requisitos sem implementar |
+| `/explore` | Modo exploratório para pensar, investigar e esclarecer requisitos sem implementar |
 
 ## Uso
 
 1. Ative uma skill relevante para sua tarefa (ex: `tlc-spec-driven` para planejamento)
-2. Use o OpenSpec para capturar requisitos e decisões
-3. Implemente com verificação atômica por tarefa
+2. Implemente com verificação atômica por tarefa
