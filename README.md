@@ -8,6 +8,7 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 ├── .opencode/          # Configuração do opencode
 │   ├── commands/       # Comandos personalizados (ex: explore)
 │   ├── skills/         # Skills instaladas
+│   ├── docs/           # Documentação de padrões de código
 │   └── package.json    # Dependências do opencode
 ├── SKILLS.md           # Lista de skills disponíveis
 └── README.md
@@ -41,8 +42,3 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | `/plan` | Gera plano de implementação a partir de `specs/prd.md` e `specs/roadmap.md` |
 | `/generate` | Executa o plano de implementação e gera código em `src/` a partir de `specs/plan.md` |
 | `/review` | Revisa o código em `src/` comparando com `specs/prd.md` e `specs/plan.md` |
-
-## Uso
-
-1. Ative uma skill relevante para sua tarefa (ex: `tlc-spec-driven` para planejamento)
-2. Implemente com verificação atômica por tarefa

@@ -225,7 +225,7 @@ Each module owns and manages its own state without sharing databases with other 
 - ❌ Never access other modules' repositories
 - ❌ Never use foreign keys across module boundaries
 
-_See `docs/coding-patterns.md` — Entity Naming, DB Configuration, Cross-Module Data Access sections._
+_See `.opencode/docs/coding-patterns.md` — Entity Naming, DB Configuration, Cross-Module Data Access sections._
 
 ---
 
@@ -240,7 +240,7 @@ Each module provides individual visibility into its health, performance, and beh
 - ✅ Include correlation IDs for request tracing
 - ❌ Never mix module concerns in logging/monitoring
 
-_See `docs/integration-patterns.md` — Structured Logging, Metrics and Health Checks sections._
+_See `.opencode/docs/integration-patterns.md` — Structured Logging, Metrics and Health Checks sections._
 
 ---
 
@@ -255,7 +255,7 @@ Failures in one module don't cascade to other modules.
 - ❌ Never let one module's failure bring down others
 - ❌ Never create synchronous dependencies that cascade failures
 
-_See `docs/integration-patterns.md` — Circuit Breakers, Timeouts and Retries sections._
+_See `.opencode/docs/integration-patterns.md` — Circuit Breakers, Timeouts and Retries sections._
 
 ---
 

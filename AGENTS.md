@@ -76,9 +76,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **Implementation tasks (writing code):**
 
-- **Creating controllers, services, or repositories** → `docs/coding-patterns.md`
+- **Creating controllers, services, or repositories** → `.opencode/docs/coding-patterns.md`
   - Repository pattern, lean controllers, transaction management, entity naming, state isolation
-- **Integrating external APIs, third-party services, observability** → `docs/integration-patterns.md`
+- **Integrating external APIs, third-party services, observability** → `.opencode/docs/integration-patterns.md`
   - Client encapsulation, injection patterns, logging, metrics, circuit breakers, event systems
 
 **Architecture/design tasks** → handled automatically by the `modular-architecture` skill:
@@ -87,13 +87,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 #### Quick Reference by Task Type
 
-
 | Task Type                         | Primary Doc                    | Notes                        |
 | --------------------------------- | ------------------------------ | ---------------------------- |
-| New entity/migration              | `docs/coding-patterns.md`      | Entity naming section        |
-| New controller/service/repository | `docs/coding-patterns.md`      | Full patterns doc            |
-| External API integration          | `docs/integration-patterns.md` | Client encapsulation section |
-| Logging/metrics/circuit breakers  | `docs/integration-patterns.md` | Resilience sections          |
+| New entity/migration              | `.opencode/docs/coding-patterns.md`      | Entity naming section        |
+| New controller/service/repository | `.opencode/docs/coding-patterns.md`      | Full patterns doc            |
+| External API integration          | `.opencode/docs/integration-patterns.md` | Client encapsulation section |
+| Logging/metrics/circuit breakers  | `.opencode/docs/integration-patterns.md` | Resilience sections          |
 | Create new module                 | `modular-architecture` skill   | Auto-triggered               |
 | Evaluate module boundaries        | `modular-architecture` skill   | Auto-triggered               |
 | Architecture compliance check     | `modular-architecture` skill   | Auto-triggered               |

@@ -137,7 +137,7 @@ export const factory = (): z.infer<typeof configSchema> => {
 
 ### Entity, Repository, Service, Controller
 
-Production files co-located in `package/<module>/<aggregate>/`; unit specs in `package/<module>/<aggregate>/__test__/`. See `docs/coding-patterns.md` for patterns.
+Production files co-located in `package/<module>/<aggregate>/`; unit specs in `package/<module>/<aggregate>/__test__/`. See `.opencode/docs/coding-patterns.md` for patterns.
 
 ```typescript
 // package/billing/subscription/subscription.entity.ts — module-prefixed: BillingSubscription
