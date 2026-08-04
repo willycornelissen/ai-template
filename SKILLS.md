@@ -18,7 +18,30 @@
 | **technical-design-doc-creator** | Cria Documentos de Design Técnico (TDD) abrangentes |
 | **tlc-spec-driven** | Planejamento e implementação de funcionalidades em 4 fases: Specify → Design → Tasks → Execute |
 
+## Frontend & Design Skills (`.opencode/skills/`)
+
+Documentação completa em [FRONTEND.md](FRONTEND.md).
+
+| Skill | Descrição |
+|-------|-----------|
+| **ui-ux-pro-max** | Inteligência de design UI/UX para web e mobile (estilos, paletas, fontes, UX, GSAP, gráficos) |
+| **design** | Design abrangente: logo (Gemini AI), identidade corporativa (CIP), ícones, apresentações, banners |
+| **ui-styling** | Interfaces com shadcn/ui (Radix + Tailwind), componentes acessíveis e visual canvas |
+| **design-system** | Arquitetura de tokens em 3 camadas, variáveis CSS, escalas e geração de slides |
+| **brand** | Identidade de marca: voz, guias visuais, gestão de ativos e sync com tokens |
+| **banner-design** | Banners multi-formato para redes sociais, anúncios, hero e impressão (22 estilos) |
+| **ai-artist** | Geração de imagens Nano Banana / Gemini com 129 prompts curados e 3 modos |
+| **ai-multimodal** | Processamento e geração de mídia via Gemini API (áudio, imagem, vídeo, PDF) |
+| **chrome-devtools** | Automação de browser e renderização visual com Puppeteer via CLI |
+| **frontend-design** | Interfaces frontend de alta qualidade em HTML/CSS |
+| **assets-organizing** | Convenções de organização de outputs em `assets/` por tópico, data e slug |
+| **slides** | Apresentações HTML estratégicas com Chart.js, design tokens e copywriting |
+
 ## Reversa Skills (`.agents/skills/`)
+
+Documentação completa em [LEGADO.md](LEGADO.md).
+
+O **Reversa** é um framework de engenharia reversa para descobrir, documentar e especificar sistemas legados em artefatos executáveis.
 
 | Skill | Descrição |
 |-------|-----------|
