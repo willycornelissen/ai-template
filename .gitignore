@@ -1,0 +1,13 @@
+# Virtualenv compartilhado (instalado localmente, não versionar)
+.opencode/skills/.venv/
+
+# Dependências Node (instaladas via npm install)
+node_modules/
+
+# Artefatos Python
+__pycache__/
+*.pyc
+.coverage
+
+# Artefatos do ChloeKit / testes
+.opencode/skills/**/scripts/.coverage
