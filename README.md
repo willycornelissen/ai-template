@@ -35,7 +35,12 @@ Template para projetos de desenvolvimento de software assistido por IA usando [o
 | **skill-architect** | Criação de novas skills |
 | **spec-driven-eval** | Avaliação de implementação contra PRD/spec |
 | **technical-design-doc-creator** | Criação de Documentos de Design Técnico |
+| **tlc-discover** | Entrevista de ideias não refinadas gerando veredito e documento de design |
+| **tlc-implement** | Implementação com checks congelados, provas e verificação independente |
+| **tlc-plan** | Planejamento acionável a partir de requisições/PRDs com critérios EARS |
+| **tlc-prd** | Entrevista de produto e geração de PRD completo |
 | **tlc-spec-driven** | Planejamento em 4 fases: Spec → Design → Tasks → Execute |
+| **tlc-spec-lean** | Spec-driven com obrigações congeladas, checks com provas e verificação |
 
 ### Frontend & Design Skills (`.opencode/skills/`)
 

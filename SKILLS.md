@@ -16,7 +16,12 @@
 | **skill-architect** | Guia para projetar e construir skills de alta qualidade do zero |
 | **spec-driven-eval** | Avalia o quão completamente uma implementação atende a um PRD/spec |
 | **technical-design-doc-creator** | Cria Documentos de Design Técnico (TDD) abrangentes |
-| **tlc-spec-driven** | Planejamento e implementação de funcionalidades em 4 fases: Specify → Design → Tasks → Execute |
+| **tlc-discover** | Entrevista ideias brutas gerando veredito e documento de design (decisões, fluxos, schema, contratos) |
+| **tlc-implement** | Implementa planos/tickets com congelamento de checks, provas (proofs) e verificação independente |
+| **tlc-plan** | Transforma requisição/PRD em plano acionável com critérios EARS, fluxos e contratos |
+| **tlc-prd** | Conduz entrevista de produto e gera PRD completo (situação, problema, critérios de sucesso, jornadas) |
+| **tlc-spec-driven** | Planejamento e implementação em 4 fases adaptativas: Specify → Design → Tasks → Execute |
+| **tlc-spec-lean** | Spec-driven com obrigações congeladas, checks baseados em provas, build e verificação |
 
 ## Frontend & Design Skills (`.opencode/skills/`)
 

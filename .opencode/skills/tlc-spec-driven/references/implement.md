@@ -24,19 +24,23 @@ This is where code gets written. Every task follows the same cycle: plan → imp
 receives the task definitions for every phase in its batch, coding principles, the generated Test
 Coverage Matrix and Gate Check Commands from tasks.md, and relevant spec/design context. A batch is
 one or more consecutive whole phases packed to ~7 tasks. The worker executes ALL tasks in its
-assigned batch in order — finishing every task in one phase before starting the next phase in the
-batch — and each task follows every step below (implement → gate → atomic commit) before moving to
+assigned batch in order - finishing every task in one phase before starting the next phase in the
+batch - and each task follows every step below (implement → gate → atomic commit) before moving to
 the next. After all tasks in the batch are complete, the worker reports a compact summary (tasks
 done, commit hashes, test counts, deviations/blockers) to the orchestrator. See
 [sub-agents.md](sub-agents.md) for the full model.
 
-### Before implementing: assess sub-agent delegation (MANDATORY — before the first task)
+### Before implementing: the approvals
 
-Before implementing anything, if a formal `tasks.md` with an Execution Plan exists, **count its total tasks** and pack the phases into task-budgeted batches (~7 tasks per worker, whole phases — see [sub-agents.md](sub-agents.md)). If that yields **more than one batch** (> ~8 tasks), you MUST present the sub-agent offer to the user and wait for their choice before starting Execute — do not silently proceed inline. If the feature fits a single batch (≤ ~8 tasks, or the user declines), execute inline. Skip this check only when you are already a batch worker executing a delegated batch (the orchestrator already made the delegation decision).
+Run `python3 <skill-dir>/scripts/validate_tasks.py <feature> --execute`. Execute starts only when `spec.md`, and `tasks.md` when it exists, carry `**Approved**: <date> - user: "<their words>"`. A missing line means the user has not approved: present and stop, never write it yourself.
+
+### Before implementing: assess sub-agent delegation (MANDATORY - before the first task)
+
+Before implementing anything, if a formal `tasks.md` with an Execution Plan exists, **count its total tasks** and pack the phases into task-budgeted batches (~7 tasks per worker, whole phases - see [sub-agents.md](sub-agents.md)). If that yields **more than one batch** (> ~8 tasks), you MUST present the sub-agent offer to the user and wait for their choice before starting Execute - do not silently proceed inline. If the feature fits a single batch (≤ ~8 tasks, or the user declines), execute inline. Skip this check only when you are already a batch worker executing a delegated batch (the orchestrator already made the delegation decision).
 
 ### 0. List Atomic Steps (MANDATORY when Tasks phase was skipped)
 
-If there is no `tasks.md` for this feature, you MUST list atomic steps before writing any code. This is non-negotiable — it prevents the agent from losing focus and doing too many things at once.
+If there is no `tasks.md` for this feature, you MUST list atomic steps before writing any code. This is non-negotiable - it prevents the agent from losing focus and doing too many things at once.
 
 ```
 ## Execution Plan
@@ -79,11 +83,14 @@ Success: [how to verify]
 If the task includes tests (per the Tests field and **Test Coverage Matrix** in tasks.md):
 
 1. Write the test file(s) covering the task's acceptance criteria.
-2. Tests MUST be derived from the task's "Done when" criteria and `spec.md` ACs — **not** from the implementation. Each test encodes what the spec requires; never write tests by reading the code and asserting what it currently does.
+2. Tests MUST be derived from the task's "Done when" criteria and `spec.md` ACs - **not** from the implementation. Each test encodes what the spec requires; never write tests by reading the code and asserting what it currently does.
 3. Each acceptance criterion from "Done when" maps to at least one test assertion whose asserted value matches the **spec-defined expected outcome**. Where the spec does not define a precise outcome, note it as a **spec-precision gap** rather than writing a vague assertion and passing silently.
 4. Edge cases from spec.md that apply to this task get test cases too.
+5. **A control owes a gesture.** A test for a control performs the gesture its criterion names - clicks the button, fills and submits the form - and asserts what the screen shows afterwards. A label in the markup, or a request posting the finished form, proves the control renders, not that it works.
 
-**HARD CONSTRAINTS (test integrity — never violate):**
+**Build against the binding source.** When a criterion cites a capture, open it before the first line of that screen and compare as you build: run the app in a browser window at the capture's size and put each state next to its capture. A difference gets fixed; one the spec does not allow gets asked.
+
+**HARD CONSTRAINTS (test integrity - never violate):**
 
 - Do NOT weaken assertions (making them less specific to pass more easily)
 - Do NOT delete or skip test cases
@@ -100,11 +107,9 @@ Write the minimum implementation needed to satisfy the task's success criteria: 
 
 **HARD CONSTRAINTS:**
 
-- Do NOT modify tests except to fix a genuinely wrong assertion (ask the user first). The tests are the spec — implementation conforms to them.
-- Do NOT weaken assertions (making them less specific to pass more easily)
-- Do NOT delete or skip test cases
-- Do NOT use the test framework's skip/disable/pending mechanism to bypass failing tests
-- Minimum code to pass — save structural improvements for a refactor task
+- The test-integrity rules from step 4 still hold: do NOT weaken, delete, or skip/disable tests. The tests are the spec - implementation conforms to them, not the reverse.
+- Modify a test only to fix a genuinely wrong assertion, and ask the user first.
+- Minimum code to pass - save structural improvements for a refactor task
 
 Follow [coding-principles.md](coding-principles.md):
 
@@ -114,7 +119,7 @@ Follow [coding-principles.md](coding-principles.md):
 
 ### 5. Gate Check (VERIFY)
 
-Run the gate check command from the task definition. This is MANDATORY — not "if applicable."
+Run the gate check command from the task definition. This is MANDATORY - not "if applicable."
 
 1. Look up the command for the task's Gate level (quick/full/build) in the **Gate Check Commands** section of tasks.md, then run it
 2. Non-zero exit code = STOP. Fix the failure. Re-run. Do not proceed until it passes.
@@ -148,143 +153,55 @@ After the gate check passes:
    - Yes → Simplify, re-run gate
    - No → Proceed
 
-4. **Test Adequacy Review (MANDATORY — hard gate).**
+4. **Test self-check (before the commit, no tables).**
 
-   A task cannot be committed or marked done until all four checks below pass. Tests must be both **necessary** (every test traces to a requirement) and **sufficient** (every requirement is covered). The scope boundary is the feature spec — do not test beyond it.
+   - **Every new test asserts something.** A test the runner reports as having no assertions is a failure.
+   - **Not shallow.** An assertion is shallow if it would still pass under a plausible *wrong* implementation: tautologies, "no error thrown" as the only assertion (unless that IS the spec), call counts or spies where the criterion demands the resulting state, happy path only when the task lists edge cases. For a payload (event, returned object, persisted record), assert each field the spec names.
+   - **Every test traces to the spec.** Each maps to a spec AC, a listed edge case or a "Done when" criterion. Remove speculative tests and tests of framework or library behaviour.
+   - **The check's proof selects it.** The `Proof:` line of each check this task settles, in tasks.md `## Checks`, names this test with a filter that selects it.
 
-   **Check A — Sufficient coverage (per-layer depth).** Build and output this table:
-
-   | Done-when criterion / spec AC / listed edge case | `file:line` + assertion expression | Spec-defined outcome | Covered? |
-   | ------------------------------------------------- | ---------------------------------- | -------------------- | -------- |
-   | [criterion from task or spec] | `path/to/test.ts:42` — `expect(result.field).toBe(expected)` | [expected value from spec] | ✅ Yes / ❌ No / ⚠️ Spec-precision gap |
-
-   **Evidence-or-zero rule:** Each covered cell MUST cite the exact `file:line` where the assertion lives AND reproduce the assertion expression (not just the `describe`/`it` name). A criterion with no located `file:line` evidence counts as **NOT covered**; the task cannot be marked done. Do not declare a criterion absent without first searching the test files — show the search before concluding it is missing (mirror: evidence or zero, never a guess).
-
-   **Spec-anchored outcome check:** For each covered criterion, derive the expected outcome from `spec.md` (or the task's "Done when" field) and confirm the test's asserted value matches it — not just that an assertion exists. Where the spec defines a precise outcome (e.g., a specific status code, a specific field value, a specific error message), the test assertion MUST target that exact outcome. Where the spec does not define a precise outcome, mark the cell as **⚠️ Spec-precision gap** and add a note; do NOT silently pass a vague assertion as if it were covered.
-
-   Every "Done when" criterion, every spec.md acceptance criterion, and every listed edge case that applies to this task must map to at least one concrete test assertion. Enforce the layer's Coverage Expectation from the Test Coverage Matrix:
-
-   - Domain / service layer: assertions map 1:1 to spec ACs; every listed edge case has a dedicated test.
-   - Route / controller / e2e layer: every route the task adds or modifies must have a happy-path test, a test for each listed edge case, and a test for each documented error/failure path.
-
-   No criterion left unverified.
-
-   **Check B — Non-shallow litmus.** Reject each of the following shallow patterns:
-   - Assertion-free tests or `expect(true)` / `expect(1).toBe(1)` style tautologies
-   - "No error thrown" as the only assertion — unless not-throwing IS the specified behavior
-   - Asserting only on mock call counts when the actual output/state is what the criterion demands
-   - Happy-path only when the task's "Done when" or spec.md lists edge cases
-
-   **Payload/conjunction rule.** For each named field in an emitted event, returned object, or persisted record, apply a separate check:
-   1. Open the constructed object at its `file:line` and confirm the field is present in the assertion.
-   2. Confirm the assertion targets the field's **value or state**, not just the call that produced it.
-   3. A present `emit(...)` / `return ...` / `save(...)` call does NOT prove the field — only an assertion on the result does.
-   4. Asserting a method was called (spy/mock) != asserting the resulting state. Both may be needed; neither substitutes for the other.
-
-   Apply this check to every payload-bearing criterion before marking it covered.
-
-   **Stack-agnostic litmus:** An assertion is shallow if it would still pass under a plausible *wrong* implementation. If so, strengthen it before committing.
-
-   **Check C — Necessary (no tests beyond the spec).** Reverse-map every test back to a spec AC, a listed edge case, or a "Done when" criterion. Build this table:
-
-   | `file:line` + assertion expression | Maps to (AC / edge case / Done-when criterion) | Keep? |
-   | ---------------------------------- | ---------------------------------------------- | ----- |
-   | `path/to/test.ts:42` — `expect(result.field).toBe(expected)` | [requirement ID or criterion text] | ✅ Keep / ❌ Remove |
-
-   Any test that maps to nothing → remove it. A test with no requirement is scope creep — it proves nothing about the feature and expands scope beyond the spec. Do not write speculative "what if" tests, do not test framework or library behavior, and do not duplicate an assertion that is already covered at another layer for the same scenario.
-
-   **Check D — Guideline conformance.** If project quality/testing guidelines were found in step 0 of tasks.md step 1.5, verify this task's tests conform to them (naming conventions, file locations, coverage thresholds, etc.). Note the guideline file followed.
-
-   **Bound:** Tests prove the work; they do not expand it. Thoroughness is scoped to the feature + spec. Repo depth is a floor (never less thorough than existing tests for the same layer); the spec is the ceiling. Do not invent requirements or tests that have no spec anchor.
-
-   **Anti-patterns — known verification cheats (treat any of these as an automatic Check failure):**
+   **Anti-patterns - known verification cheats (any of these fails the self-check):**
 
    | Anti-pattern | Why it fails |
    | ------------ | ------------ |
-   | Committing before the gate check passes | Skips the deterministic verifier — the gate is not optional |
+   | Committing before the gate check passes | Skips the deterministic verifier - the gate is not optional |
    | Asserting call count / spy invocation instead of the resulting state | Proves the method ran, not that it did the right thing |
-   | Marking a criterion covered without a `file:line` citation | Violates evidence-or-zero; suspicion of coverage is not coverage |
    | Weakening an assertion (making it less specific) to force a pass | Moves the goalposts instead of fixing the code |
    | Deleting or skipping a test to make the suite pass | Destroys coverage permanently; a failing test is a signal, not noise |
-   | "Tested elsewhere" deferral without citing where | Coverage gaps hide behind vague claims; cite the file:line or it doesn't count |
-   | Speculative "what if" tests with no spec anchor | Expands scope beyond the ceiling; remove them in Check C |
-   | Testing framework or library behavior | Tests a dependency, not the feature; remove them in Check C |
+   | Speculative "what if" tests with no spec anchor | Expands scope beyond the ceiling |
+   | Testing framework or library behavior | Tests a dependency, not the feature |
 
-   **On any failure** → rewrite or remove the affected test(s), re-run the gate, then re-run this review.
+   **On any failure** → rewrite or remove the affected test(s), re-run the gate, then re-run this self-check. The `file:line` evidence per criterion is not built here: `check_proofs.py` runs every check's proof once at the end, and the Verifier judges what a script cannot.
 
-   *Honest caveat:* This is an inspection-based review (model judgment), complementary to — not a replacement for — the deterministic gate. The gate confirms the test suite runs; the feature-level discrimination sensor (step 10) confirms the tests can detect regressions. This review confirms the suite is meaningful and bounded.
+### 7. Status + Atomic Commit
 
-   Add the two mapping tables and a one-line adequacy verdict to the Execution Template's Post-Gate section.
+After the gate is green, close the task record **before** creating the commit. Never leave `tasks.md` still open after a successful task commit - a crash between those steps is how resume redoes finished work.
 
-### 7. Atomic Git Commit
+1. Mark the task complete in `tasks.md`. Update requirement traceability in `spec.md` if requirement IDs are used.
+2. Create **one** atomic commit with the implementation and its tests. Where the repo tracks `.specs/`, those status and traceability updates go in the same commit; where its `.gitignore` excludes `.specs/`, they stay local and are not forced in - the repo decides what it versions.
 
 Each task gets its own commit immediately after verification. Never batch multiple tasks into one commit.
 
-**Format ([Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)):**
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**Types:**
-
-| Type       | When to use                                             |
-| ---------- | ------------------------------------------------------- |
-| `feat`     | New feature or capability                               |
-| `fix`      | Bug fix                                                 |
-| `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `docs`     | Documentation only                                      |
-| `test`     | Adding or correcting tests                              |
-| `style`    | Formatting, missing semicolons, etc. (no code change)   |
-| `perf`     | Performance improvement                                 |
-| `build`    | Build system or external dependencies                   |
-| `ci`       | CI configuration files and scripts                      |
-| `chore`    | Maintenance tasks that don't modify src or test files   |
-
-**Scope:** Feature name or module area, lowercase, e.g., `auth`, `cart`, `api`
-
-**Description rules:**
-
-- Imperative mood ("add", not "added" or "adds")
-- Lowercase first letter
-- No period at the end
-- Complete the sentence: "If applied, this commit will _[your description]_"
-
-**Breaking changes:** Append `!` after type/scope AND add `BREAKING CHANGE:` footer:
-
-```
-feat(api)!: change authentication endpoint response format
-
-BREAKING CHANGE: login endpoint now returns JWT in body instead of cookie
-```
-
-**Examples:**
-
-```
-feat(auth): add email validation to login form
-```
-
-```
-fix(cart): prevent negative quantity on item decrement
-```
-
-```
-refactor(api): extract token refresh logic into service
-
-Move token refresh from inline handler to dedicated AuthTokenService
-for reuse across multiple endpoints.
-```
+**Format:** the repo's commit convention; [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) when it has none - `<type>(<scope>): <description>`, imperative, lowercase, no period.
 
 **Rules:**
 
 - One task = one commit
 - Description references what was DONE, not what was planned
-- Include only files listed in the task — never sneak in "while I'm here" changes
+- Include only files listed in the task - plus the `tasks.md` / `spec.md` status updates for this task when the repo tracks `.specs/`
+- Never sneak in "while I'm here" changes
 - If tests are part of the task, include them in the same commit
+
+**Deterministic check.** Validate the message before committing: `python3 <skill-dir>/scripts/check_commit.py --message "<your message>"`. A non-zero exit means fix the format first. This makes the format rule enforceable instead of memory-dependent.
+
+**Optional git-level guard (git only, no agent dependency).** In a git repo the same check can run on every commit by wiring it as a `commit-msg` hook, so a malformed message is rejected regardless of who or what drives the commit:
+
+```bash
+# from the repo root, one time (resolve <skill-dir> to the directory that contains this skill's SKILL.md):
+ln -sf <skill-dir>/scripts/check_commit.py .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
+```
+
+This is a plain git hook, not tied to any editor or assistant. Skip it if the project manages hooks its own way (for example a pre-commit framework); the manual check above still applies.
 
 ### 8. Scope Guardrail
 
@@ -293,43 +210,27 @@ During implementation, you will notice things that could be improved, refactored
 - If it's a bug: surface it to the user (or capture it as a separate task)
 - If it's an improvement: add it to the feature's `context.md` under "Deferred Ideas" (or surface it to the user if there is no `context.md`)
 - If it's related to the current task: only include it if it's in the "Done when" criteria
+- If the user settles something mid-build: write it in the turn it arrives - into `spec.md` when it changes a criterion (an `AD-NNN` when it departs from a binding source), otherwise on the `**Settled mid-build:**` line of tasks.md `## Handoff`, in their words
 
 **The heuristic:** "Is this in my task definition?" If no, don't touch it.
 
-### 9. Update Task Status
+**Blast radius (approval ≠ remote authority):** Approving a spec or tasks authorizes local implementation and local commits only. Before `git push`, force-push, deploy, production DB migration, or any other remote / externally visible / destructive operation, STOP and get an explicit go-ahead for that action - even if Execute was already approved.
 
-Mark task complete in tasks.md. Update requirement traceability in spec.md if requirement IDs are used.
+### 9. Walk It Before You Stop (features with a screen)
 
-### 10. Feature-Level Validation (after the LAST task — MANDATORY, always runs)
+When the last task is done and the feature has a screen, open the running app and do what each story's **Independent Test** promises, as the user would - the clicks, not a request carrying a finished payload. Something broken that a test covers is a red test you missed; something broken that no test covers is a missing criterion: append it to the spec with a new requirement ID, a check and a test, then fix it.
 
-When the task you just completed is the **last task of the feature** (or of a priority group being delivered on its own, e.g. all P1 tasks), you MUST run feature-level validation before reporting the work as done. **This is not optional and is never prompted — it runs automatically.** Do not stop at the final task's commit.
+Save each state a capture draws beside it as `captures/<capture>.running.png`, taken in a browser window at the capture's size so the page lays out as the capture does - an image resized afterwards does not. A state no capture draws gets no picture. Write the `**Walked:**` line in tasks.md `## Handoff`: each story, what the screen showed, and how the user reaches each state (sign-in, data, path), so the screens sub-agent can reach them too. Leave the dev database with data the user can open those states on.
 
-**Author ≠ verifier rationale.** The implementer (you, or the batch worker) is the author of the code and tests. An author checking their own work applies the same mental model that may have produced any gaps. The Verifier is a fresh sub-agent that re-derives coverage from the spec independently — it does not inherit the author's assumptions. This separation is the quality gate, not just a style preference.
+### 10. Feature-Level Validation (after the LAST task - MANDATORY, always runs)
 
-**Layering:**
-- Per-task adequacy self-check (steps 5–6): cheap, always runs, author does it, confirms each task in isolation.
-- Feature-level validation (step 10): one trustworthy independent gate at completion, always-on, Verifier sub-agent does it.
+When the last task of the feature is committed, the orchestrator - never a batch worker - closes it:
 
-**How to delegate to the Verifier:**
-Dispatch a fresh sub-agent following the **Verifier** role described in [sub-agents.md](sub-agents.md). Provide it with:
-- `spec.md` (ACs = source of truth)
-- The git diff surface for this feature (commit range)
-- The test files in scope
-- `validate.md` as its operating checklist
-
-**What the Verifier does (full description in [validate.md](validate.md) and [sub-agents.md](sub-agents.md)):**
-1. **Spec-anchored coverage check** — re-derives coverage evidence-or-zero; confirms each test's asserted value matches the spec-defined outcome; flags spec-precision gaps.
-2. **Discrimination sensor** — injects a small behavior-level fault (flip a condition, change a return value, off-by-one) in a scratch/throwaway state (git stash or temp copy), runs the relevant tests, confirms they kill the mutant, then discards the mutation. Reports killed/survived; surviving mutants become fix tasks.
-3. **Persisted report** — writes `specification/features/[feature]/validation.md` with PASS/FAIL, per-AC evidence (`file:line` + assertion + spec outcome), gate exit results, sensor result, and the diff/commit range covered.
-4. **Chat return** — returns a compact verdict + ranked gap list to the orchestrator in chat; the orchestrator surfaces it and routes gaps to fix tasks.
-
-The Verifier runs read-only over the real implementation tree (mutations run in a scratch state only). It does NOT fix.
-
-If the Verifier returns FAIL, the orchestrator routes the ranked gaps back to an implementer as fix tasks, then re-dispatches the Verifier — bounded to a max of **3 fix→re-verify iterations** before escalating to the user.
-
-If you are unsure whether more tasks remain, check `tasks.md`: if every task is marked complete, dispatch the Verifier now.
-
----
+1. **Run the proofs.** `python3 <skill-dir>/scripts/check_proofs.py <feature>` runs every check's proof once per runner at `HEAD`, the `**Build**:` commands, and checks the pictures and the walk; it writes `proofs.md`. A red row goes back to an implementer before anyone verifies.
+2. **Dispatch two fresh sub-agents in parallel, over the same `HEAD`:** the **Verifier** with [validate.md](validate.md), and when a criterion cites a capture, the **screens sub-agent** with [verify-screens.md](verify-screens.md). Author ≠ verifier: neither is the author, and neither fixes anything. Write both on the `**Dispatched:**` line of tasks.md `## Handoff` before sending them, with the `HEAD`, and mark each `returned` when it does.
+3. **Fix every finding in one pass,** each closed by a commit the report's `Closed` column cites.
+4. **Round 2 is the script:** `check_proofs.py <feature> --mutations mutations.json` with the Verifier's mutations, and the screens sub-agent again on the rows that read `differs` only, which writes `**Round**: 2`. There is no second Verifier and no third round. What still fails goes to the user.
+5. **Gate:** `python3 <skill-dir>/scripts/validate_verification.py <feature>` exits 0, then distill lessons ([lessons.md](lessons.md)). Close only when every sub-agent you dispatched has returned.
 
 ## Execution Template
 
@@ -364,7 +265,7 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 
 - Command: [gate check command]
 - Result: [X passed, 0 failed]
-- Test count: [N — matches planned test count]
+- Test count: [N - matches planned test count]
 
 ### Post-Gate
 
@@ -372,45 +273,28 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 - [x] No unnecessary changes made
 - [x] Matches existing patterns
 
-**Test Adequacy Review:**
-
-*Check A — Sufficient (coverage mapping):*
-
-| Done-when criterion / spec AC / listed edge case | `file:line` + assertion expression | Spec-defined outcome | Covered? |
-| ------------------------------------------------- | ---------------------------------- | -------------------- | -------- |
-| [criterion] | `path/to/test.ts:42` — `expect(result.field).toBe(expected)` | [spec value] | ✅ Yes / ⚠️ Gap |
-
-*Check C — Necessary (reverse mapping):*
-
-| `file:line` + assertion expression | Maps to (AC / edge case / Done-when criterion) | Keep? |
-| ---------------------------------- | ---------------------------------------------- | ----- |
-| `path/to/test.ts:42` — `expect(result.field).toBe(expected)` | [requirement or criterion text] | ✅ Keep |
-
-- [ ] Check A: every criterion covered with `file:line` evidence; spec-defined outcomes matched or gap flagged; per-layer depth met
-- [ ] Check B: no shallow assertions; payload/conjunction rule applied to every payload-bearing criterion
-- [ ] Check C: every test maps to a requirement — no speculative or unclaimed tests
-- [ ] Check D: guideline conformance — [guideline file followed, or "none — strong defaults applied"]
-
-**Verdict**: [All criteria covered, spec outcomes matched, no shallow assertions, all tests necessary] / [Rewritten: describe what was fixed]
+- [x] Test self-check: every test asserts, none shallow, each traces to the spec, each check's proof selects it
 
 **Status**: ✅ Complete | ❌ Blocked | ⚠️ Partial
 ```
 
-**After the LAST task:** dispatch the Verifier sub-agent (see step 10 and [sub-agents.md](sub-agents.md)) for independent feature-level validation, including the spec-anchored check and discrimination sensor. Validation always runs automatically — never prompted. Execute is not done until the Verifier reports PASS and the validation report is written.
+**After the LAST task:** walk the screens and save the pictures (step 9), then close the feature (step 10): `check_proofs.py`, the Verifier beside the screens sub-agent, one pass of fixes, the script again, and `validate_verification.py` exiting 0.
 
 ---
 
 ## Tips
 
-- **One task at a time** — Focus prevents errors
-- **Tools matter** — Wrong MCP = wrong approach
-- **Reuses save tokens** — Copy patterns, don't reinvent
-- **Check before commit** — Verify all criteria, then commit
-- **Stay surgical** — Touch only what's necessary
-- **Commit per task** — Clean git history enables bisect and rollback
-- **Never "while I'm here"** — Scope creep during implementation is the #1 quality killer
-- **Learn from mistakes** — If something goes wrong, surface it to the user so it informs the next task
-- **Don't stop at the last commit** — Feature-level validation (step 10) is the final step of Execute, not optional
+- **One task at a time** - Focus prevents errors
+- **Reuses save tokens** - Copy patterns, don't reinvent
+- **Status then commit** - Mark `tasks.md` complete before the atomic commit, and include that update in it when the repo tracks `.specs/`
+- **Stay surgical** - Touch only what's necessary
+- **Commit per task** - Clean git history enables bisect and rollback
+- **Never "while I'm here"** - Scope creep during implementation is the #1 quality killer
+- **Approval is local** - Push, deploy, and other remote/destructive ops need an explicit go-ahead
+- **Learn from mistakes** - If something goes wrong, surface it to the user so it informs the next task
+- **Don't stop at the last commit** - Feature-level validation (step 10) is the final step of Execute, not optional
+- **Plain voice in prose** - Commit bodies and the validation summary follow the writing rules in [coding-principles.md](coding-principles.md): lead with what changed, no filler
+- **Validate the commit message** - `python3 <skill-dir>/scripts/check_commit.py --message "..."` before committing
 
 ---
 
@@ -418,9 +302,9 @@ If you are unsure whether more tasks remain, check `tasks.md`: if every task is 
 
 When work is interrupted, paused, or a session ends before the feature is complete:
 
-1. Open `specification/STATE.md`.
+1. Open `.specs/STATE.md`.
 2. Locate the `## Handoff` section.
 3. **Replace only that section's body** with the current snapshot (feature, phase/task, completed, in-progress `file:line`, next step, blockers, uncommitted files, branch). See [memory.md](memory.md) for the exact format.
-4. Do NOT touch the `## Decisions` section above it — decisions are written only during Design.
+4. Do NOT touch the `## Decisions` section above it - decisions are written only during Design.
 
-**Section-scoped write (critical):** Replace the content between the `## Handoff` header and the next `##` header (or end of file). Never overwrite the full file — doing so silently destroys the Decisions log.
+**Section-scoped write (critical):** Replace the content between the `## Handoff` header and the next `##` header (or end of file). Never overwrite the full file - doing so silently destroys the Decisions log.
